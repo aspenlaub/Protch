@@ -2,9 +2,11 @@
 using System.Linq;
 using Aspenlaub.Net.GitHub.CSharp.Gitty;
 using Aspenlaub.Net.GitHub.CSharp.Gitty.Extensions;
+using Aspenlaub.Net.GitHub.CSharp.Gitty.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Gitty.TestUtilities;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Extensions;
+using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Protch.Interfaces;
 using Autofac;
 using LibGit2Sharp;
@@ -58,6 +60,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.Protch.Test {
             const string url = "https://github.com/aspenlaub/PakledConsumer.git";
             gitUtilities.Clone(url, PakledConsumerTarget.Folder(), new CloneOptions { BranchName = "master" }, true, errorsAndInfos);
             Assert.IsFalse(errorsAndInfos.Errors.Any(), errorsAndInfos.ErrorsPlusRelevantInfos());
+
+            IgnoreOutdatedBuildCakePendingChangesAndDoNotPush(PakledConsumerTarget, errorsAndInfos);
 
             var solutionFileFullName = PakledConsumerTarget.Folder().SubFolder("src").FullName + @"\" + PakledConsumerTarget.SolutionId + ".sln";
             var projectFileFullName = PakledConsumerTarget.Folder().SubFolder("src").FullName + @"\" + PakledConsumerTarget.SolutionId + ".csproj";
@@ -131,6 +135,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.Protch.Test {
             gitUtilities.Clone(url, ChabStandardTarget.Folder(), new CloneOptions { BranchName = "master" }, true, errorsAndInfos);
             Assert.IsFalse(errorsAndInfos.Errors.Any(), errorsAndInfos.ErrorsPlusRelevantInfos());
 
+            IgnoreOutdatedBuildCakePendingChangesAndDoNotPush(ChabStandardTarget, errorsAndInfos);
+
             var solutionFileFullName = ChabStandardTarget.Folder().SubFolder("src").FullName + @"\" + ChabStandardTarget.SolutionId + ".sln";
             var projectFileFullName = ChabStandardTarget.Folder().SubFolder("src").FullName + @"\" + ChabStandardTarget.SolutionId + ".csproj";
             Assert.IsTrue(File.Exists(projectFileFullName));
@@ -193,6 +199,17 @@ namespace Aspenlaub.Net.GitHub.CSharp.Protch.Test {
             Assert.IsNotNull(project);
             Assert.AreEqual(projectFileFullName, project.ProjectFileFullName);
             Assert.AreEqual(ChabStandardTarget.SolutionId + ".Test", project.ProjectName);
+        }
+
+        private static void IgnoreOutdatedBuildCakePendingChangesAndDoNotPush(ITestTargetFolder targetFolder, IErrorsAndInfos errorsAndInfos) {
+            var latestBuildCakeScriptProvider = new LatestBuildCakeScriptProvider();
+            var cakeScript = latestBuildCakeScriptProvider.GetLatestBuildCakeScript("build.cake");
+            var cakeScriptFileFullName = targetFolder.Folder().FullName + @"\" + "build.cake";
+            File.WriteAllText(cakeScriptFileFullName, cakeScript);
+
+            vContainer.Resolve<TestTargetRunner>()
+                .RunBuildCakeScript("build.cake", targetFolder, vContainer.Resolve<ICakeRunner>(), "IgnoreOutdatedBuildCakePendingChangesAndDoNotPush", errorsAndInfos);
+            Assert.IsFalse(errorsAndInfos.Errors.Any(), errorsAndInfos.ErrorsPlusRelevantInfos());
         }
     }
 }
