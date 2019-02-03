@@ -12,12 +12,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" />
   <ItemGroup>
-    <None Remove="build.cake" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="build.cake" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="Aspenlaub.Net.GitHub.CSharp.Gitty" Version="1.0.6972.26768" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="1.4.0" />
@@ -25,5 +19,8 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Protch.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\build.cake" Link="build.cake" />
   </ItemGroup>
 </Project>
