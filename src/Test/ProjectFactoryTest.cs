@@ -15,7 +15,7 @@ using IContainer = Autofac.IContainer;
 namespace Aspenlaub.Net.GitHub.CSharp.Protch.Test {
     [TestClass]
     public class ProjectFactoryTest {
-        protected static TestTargetFolder PakledConsumerTarget = new TestTargetFolder(nameof(ProjectFactoryTest), "PakledConsumer");
+        protected static TestTargetFolder PakledConsumerCoreTarget = new TestTargetFolder(nameof(ProjectFactoryTest), "PakledConsumerCore");
         protected static TestTargetFolder ChabStandardTarget = new TestTargetFolder(nameof(ProjectFactoryTest), "ChabStandard");
         private static IContainer vContainer;
         protected static TestTargetInstaller TargetInstaller;
@@ -26,8 +26,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.Protch.Test {
             vContainer = new ContainerBuilder().UseGitty().UseGittyTestUtilities().UseProtch().Build();
             TargetInstaller = vContainer.Resolve<TestTargetInstaller>();
             TargetRunner = vContainer.Resolve<TestTargetRunner>();
-            TargetInstaller.DeleteCakeFolder(PakledConsumerTarget);
-            TargetInstaller.CreateCakeFolder(PakledConsumerTarget, out var errorsAndInfos);
+            TargetInstaller.DeleteCakeFolder(PakledConsumerCoreTarget);
+            TargetInstaller.CreateCakeFolder(PakledConsumerCoreTarget, out var errorsAndInfos);
             Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsPlusRelevantInfos());
             TargetInstaller.DeleteCakeFolder(ChabStandardTarget);
             TargetInstaller.CreateCakeFolder(ChabStandardTarget, out errorsAndInfos);
@@ -36,46 +36,46 @@ namespace Aspenlaub.Net.GitHub.CSharp.Protch.Test {
 
         [ClassCleanup]
         public static void ClassCleanup() {
-            TargetInstaller.DeleteCakeFolder(PakledConsumerTarget);
+            TargetInstaller.DeleteCakeFolder(PakledConsumerCoreTarget);
             TargetInstaller.DeleteCakeFolder(ChabStandardTarget);
         }
 
         [TestInitialize]
         public void Initialize() {
-            PakledConsumerTarget.Delete();
+            PakledConsumerCoreTarget.Delete();
             ChabStandardTarget.Delete();
         }
 
         [TestCleanup]
         public void TestCleanup() {
-            PakledConsumerTarget.Delete();
+            PakledConsumerCoreTarget.Delete();
             ChabStandardTarget.Delete();
         }
 
         [TestMethod]
-        public void CanLoadPakledConsumerProject() {
+        public void CanLoadPakledConsumerCoreProject() {
             var gitUtilities = new GitUtilities();
             var errorsAndInfos = new ErrorsAndInfos();
-            const string url = "https://github.com/aspenlaub/PakledConsumer.git";
-            gitUtilities.Clone(url, PakledConsumerTarget.Folder(), new CloneOptions { BranchName = "master" }, true, errorsAndInfos);
+            const string url = "https://github.com/aspenlaub/PakledConsumerCore.git";
+            gitUtilities.Clone(url, PakledConsumerCoreTarget.Folder(), new CloneOptions { BranchName = "master" }, true, errorsAndInfos);
             Assert.IsFalse(errorsAndInfos.Errors.Any(), errorsAndInfos.ErrorsPlusRelevantInfos());
 
-            vContainer.Resolve<TestTargetRunner>().IgnoreOutdatedBuildCakePendingChangesAndDoNotPush(Assembly.GetExecutingAssembly(), PakledConsumerTarget, errorsAndInfos);
+            vContainer.Resolve<TestTargetRunner>().IgnoreOutdatedBuildCakePendingChangesAndDoNotPush(Assembly.GetExecutingAssembly(), PakledConsumerCoreTarget, errorsAndInfos);
             Assert.IsFalse(errorsAndInfos.Errors.Any(), errorsAndInfos.ErrorsPlusRelevantInfos());
 
-            var solutionFileFullName = PakledConsumerTarget.Folder().SubFolder("src").FullName + @"\" + PakledConsumerTarget.SolutionId + ".sln";
-            var projectFileFullName = PakledConsumerTarget.Folder().SubFolder("src").FullName + @"\" + PakledConsumerTarget.SolutionId + ".csproj";
+            var solutionFileFullName = PakledConsumerCoreTarget.Folder().SubFolder("src").FullName + @"\" + PakledConsumerCoreTarget.SolutionId + ".sln";
+            var projectFileFullName = PakledConsumerCoreTarget.Folder().SubFolder("src").FullName + @"\" + PakledConsumerCoreTarget.SolutionId + ".csproj";
             Assert.IsTrue(File.Exists(projectFileFullName));
             var sut = vContainer.Resolve<IProjectFactory>();
             var project = sut.Load(solutionFileFullName, projectFileFullName, errorsAndInfos);
             var projectLogic = vContainer.Resolve<IProjectLogic>();
-            Assert.IsFalse(projectLogic.IsANetStandardOrCoreProject(project));
+            Assert.IsTrue(projectLogic.IsANetStandardOrCoreProject(project));
             Assert.IsTrue(projectLogic.DoAllNetStandardOrCoreConfigurationsHaveNuspecs(project));
             Assert.IsFalse(errorsAndInfos.Errors.Any(), errorsAndInfos.ErrorsPlusRelevantInfos());
             Assert.IsNotNull(project);
             Assert.AreEqual(projectFileFullName, project.ProjectFileFullName);
-            Assert.AreEqual((object) PakledConsumerTarget.SolutionId, project.ProjectName);
-            Assert.AreEqual("v4.6", project.TargetFramework);
+            Assert.AreEqual((object) PakledConsumerCoreTarget.SolutionId, project.ProjectName);
+            Assert.AreEqual("netcoreapp2.2", project.TargetFramework);
             Assert.AreEqual(3, project.PropertyGroups.Count);
             var rootNamespace = "";
             foreach (var propertyGroup in project.PropertyGroups) {
@@ -83,48 +83,45 @@ namespace Aspenlaub.Net.GitHub.CSharp.Protch.Test {
                 Assert.AreEqual((object) propertyGroup.AssemblyName, propertyGroup.RootNamespace);
                 if (propertyGroup.Condition == "") {
                     rootNamespace = propertyGroup.RootNamespace;
-                    Assert.IsTrue(propertyGroup.AssemblyName.StartsWith("Aspenlaub.Net.GitHub.CSharp." + PakledConsumerTarget.SolutionId), $"Unexpected assembly name \"{propertyGroup.AssemblyName}\"");
+                    Assert.IsTrue(propertyGroup.AssemblyName.StartsWith("Aspenlaub.Net.GitHub.CSharp." + PakledConsumerCoreTarget.SolutionId), $"Unexpected assembly name \"{propertyGroup.AssemblyName}\"");
                     Assert.AreEqual("", propertyGroup.UseVsHostingProcess);
                     Assert.AreEqual("false", propertyGroup.GenerateBuildInfoConfigFile);
                     Assert.AreEqual("", propertyGroup.IntermediateOutputPath);
                     Assert.AreEqual("", propertyGroup.OutputPath);
-                    Assert.AreEqual("", propertyGroup.AppendTargetFrameworkToOutputPath);
+                    Assert.AreEqual("false", propertyGroup.AppendTargetFrameworkToOutputPath);
                     Assert.AreEqual("", propertyGroup.AllowUnsafeBlocks);
                     Assert.AreEqual("", propertyGroup.NuspecFile);
-                    Assert.AreEqual("", propertyGroup.Deterministic);
-                    Assert.AreEqual("", propertyGroup.GenerateAssemblyInfo);
+                    Assert.AreEqual("false", propertyGroup.Deterministic);
+                    Assert.AreEqual("false", propertyGroup.GenerateAssemblyInfo);
                 } else {
                     Assert.AreEqual("", propertyGroup.AssemblyName);
                     if (propertyGroup.Condition.Contains("Debug|")) {
-                        Assert.AreEqual("", propertyGroup.UseVsHostingProcess);
-                        Assert.AreEqual(@"bin\Debug\", propertyGroup.OutputPath);
+                        Assert.AreEqual("", propertyGroup.NuspecFile);
                     } else {
-                        Assert.AreEqual("false", propertyGroup.UseVsHostingProcess);
-                        Assert.AreEqual(@"bin\Release\", propertyGroup.OutputPath);
+                        Assert.AreEqual("PakledConsumerCore.nuspec", propertyGroup.NuspecFile);
                     }
+                    Assert.AreEqual("", propertyGroup.UseVsHostingProcess);
+                    Assert.AreEqual("", propertyGroup.OutputPath);
                     Assert.AreEqual("", propertyGroup.GenerateBuildInfoConfigFile);
                     Assert.AreEqual("", propertyGroup.AppendTargetFrameworkToOutputPath);
                     Assert.AreEqual("", propertyGroup.AllowUnsafeBlocks);
-                    Assert.AreEqual("", propertyGroup.NuspecFile);
                     Assert.AreEqual("", propertyGroup.Deterministic);
                     Assert.AreEqual("", propertyGroup.GenerateAssemblyInfo);
                 }
             }
 
-            Assert.AreEqual(2, project.ReferencedDllFiles.Count);
-            // Assert.IsTrue(project.ReferencedDllFiles.All(f => File.Exists(f)), "File/-s not found:\r\n" + string.Join("\r\n", project.ReferencedDllFiles.Where(f => !File.Exists(f))));
-            Assert.IsTrue(project.ReferencedDllFiles.Any(f => f.EndsWith(".Pakled.dll")));
-            Assert.IsTrue(project.ReferencedDllFiles.Any(f => f.EndsWith(".Json.dll")));
+            Assert.AreEqual(1, project.ReferencedDllFiles.Count);
+            Assert.IsTrue(project.ReferencedDllFiles.Any(f => f.EndsWith("System")));
 
             Assert.AreEqual(rootNamespace, project.RootNamespace);
 
-            projectFileFullName = PakledConsumerTarget.Folder().SubFolder("src").FullName + @"\Test\" + PakledConsumerTarget.SolutionId + ".Test.csproj";
+            projectFileFullName = PakledConsumerCoreTarget.Folder().SubFolder("src").FullName + @"\Test\" + PakledConsumerCoreTarget.SolutionId + ".Test.csproj";
             Assert.IsTrue(File.Exists(projectFileFullName));
             project = sut.Load(solutionFileFullName, projectFileFullName, errorsAndInfos);
             Assert.IsFalse(errorsAndInfos.Errors.Any(), errorsAndInfos.ErrorsPlusRelevantInfos());
             Assert.IsNotNull(project);
             Assert.AreEqual(projectFileFullName, project.ProjectFileFullName);
-            Assert.AreEqual(PakledConsumerTarget.SolutionId + ".Test", project.ProjectName);
+            Assert.AreEqual(PakledConsumerCoreTarget.SolutionId + ".Test", project.ProjectName);
         }
 
         [TestMethod]
