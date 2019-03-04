@@ -57,11 +57,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.Protch.Test {
             var gitUtilities = new GitUtilities();
             var errorsAndInfos = new ErrorsAndInfos();
             const string url = "https://github.com/aspenlaub/PakledConsumerCore.git";
-            gitUtilities.Clone(url, PakledConsumerCoreTarget.Folder(), new CloneOptions { BranchName = "master" }, true, errorsAndInfos);
+            gitUtilities.Clone(url, "master", PakledConsumerCoreTarget.Folder(), new CloneOptions { BranchName = "master" }, true, errorsAndInfos);
             Assert.IsFalse(errorsAndInfos.Errors.Any(), errorsAndInfos.ErrorsPlusRelevantInfos());
-
-            vContainer.Resolve<TestTargetRunner>().IgnoreOutdatedBuildCakePendingChangesAndDoNotPush(Assembly.GetExecutingAssembly(), PakledConsumerCoreTarget, errorsAndInfos);
-            Assert.IsFalse(errorsAndInfos.Errors.Any(), errorsAndInfos.ErrorsPlusRelevantInfos());
+            gitUtilities.Pull(PakledConsumerCoreTarget.Folder(), "UserName", "user.name@aspenlaub.org");
 
             var solutionFileFullName = PakledConsumerCoreTarget.Folder().SubFolder("src").FullName + @"\" + PakledConsumerCoreTarget.SolutionId + ".sln";
             var projectFileFullName = PakledConsumerCoreTarget.Folder().SubFolder("src").FullName + @"\" + PakledConsumerCoreTarget.SolutionId + ".csproj";
@@ -129,11 +127,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.Protch.Test {
             var gitUtilities = new GitUtilities();
             var errorsAndInfos = new ErrorsAndInfos();
             const string url = "https://github.com/aspenlaub/ChabStandard.git";
-            gitUtilities.Clone(url, ChabStandardTarget.Folder(), new CloneOptions { BranchName = "master" }, true, errorsAndInfos);
+            gitUtilities.Clone(url, "master", ChabStandardTarget.Folder(), new CloneOptions { BranchName = "master" }, true, errorsAndInfos);
             Assert.IsFalse(errorsAndInfos.Errors.Any(), errorsAndInfos.ErrorsPlusRelevantInfos());
-
-            vContainer.Resolve<TestTargetRunner>().IgnoreOutdatedBuildCakePendingChangesAndDoNotPush(Assembly.GetExecutingAssembly(), ChabStandardTarget, errorsAndInfos);
-            Assert.IsFalse(errorsAndInfos.Errors.Any(), errorsAndInfos.ErrorsPlusRelevantInfos());
+            gitUtilities.Pull(ChabStandardTarget.Folder(), "UserName", "user.name@aspenlaub.org");
 
             var solutionFileFullName = ChabStandardTarget.Folder().SubFolder("src").FullName + @"\" + ChabStandardTarget.SolutionId + ".sln";
             var projectFileFullName = ChabStandardTarget.Folder().SubFolder("src").FullName + @"\" + ChabStandardTarget.SolutionId + ".csproj";
