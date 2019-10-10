@@ -1,9 +1,9 @@
 ﻿using System.IO;
 using System.Linq;
-using System.Reflection;
 using Aspenlaub.Net.GitHub.CSharp.Gitty;
 using Aspenlaub.Net.GitHub.CSharp.Gitty.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.Gitty.TestUtilities;
+using Aspenlaub.Net.GitHub.CSharp.Pegh.Components;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.Protch.Interfaces;
@@ -23,7 +23,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Protch.Test {
 
         [ClassInitialize]
         public static void ClassInitialize(TestContext context) {
-            vContainer = new ContainerBuilder().UseGitty().UseGittyTestUtilities().UseProtch().Build();
+            vContainer = new ContainerBuilder().UseGitty(new DummyCsArgumentPrompter()).UseGittyTestUtilities().UseProtch().Build();
             TargetInstaller = vContainer.Resolve<TestTargetInstaller>();
             TargetRunner = vContainer.Resolve<TestTargetRunner>();
             TargetInstaller.DeleteCakeFolder(PakledConsumerCoreTarget);
@@ -93,11 +93,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Protch.Test {
                     Assert.AreEqual("false", propertyGroup.GenerateAssemblyInfo);
                 } else {
                     Assert.AreEqual("", propertyGroup.AssemblyName);
-                    if (propertyGroup.Condition.Contains("Debug|")) {
-                        Assert.AreEqual("", propertyGroup.NuspecFile);
-                    } else {
-                        Assert.AreEqual("PakledConsumerCore.nuspec", propertyGroup.NuspecFile);
-                    }
+                    Assert.AreEqual(propertyGroup.Condition.Contains("Debug|") ? "" : "PakledConsumerCore.nuspec", propertyGroup.NuspecFile);
                     Assert.AreEqual("", propertyGroup.UseVsHostingProcess);
                     Assert.AreEqual("", propertyGroup.OutputPath);
                     Assert.AreEqual("", propertyGroup.GenerateBuildInfoConfigFile);
