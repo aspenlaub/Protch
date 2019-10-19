@@ -73,7 +73,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Protch.Test {
             Assert.IsNotNull(project);
             Assert.AreEqual(projectFileFullName, project.ProjectFileFullName);
             Assert.AreEqual((object) PakledConsumerCoreTarget.SolutionId, project.ProjectName);
-            Assert.AreEqual("netcoreapp2.2", project.TargetFramework);
+            Assert.AreEqual("netcoreapp3.0", project.TargetFramework);
             Assert.AreEqual(3, project.PropertyGroups.Count);
             var rootNamespace = "";
             foreach (var propertyGroup in project.PropertyGroups) {
@@ -104,8 +104,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Protch.Test {
                 }
             }
 
-            Assert.AreEqual(1, project.ReferencedDllFiles.Count);
-            Assert.IsTrue(project.ReferencedDllFiles.Any(f => f.EndsWith("System")));
+            Assert.AreEqual(0, project.ReferencedDllFiles.Count);
 
             Assert.AreEqual(rootNamespace, project.RootNamespace);
 
