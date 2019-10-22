@@ -90,7 +90,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Protch.Test {
                     Assert.AreEqual("", propertyGroup.AllowUnsafeBlocks);
                     Assert.AreEqual("", propertyGroup.NuspecFile);
                     Assert.AreEqual("false", propertyGroup.Deterministic);
-                    Assert.AreEqual("false", propertyGroup.GenerateAssemblyInfo);
+                    Assert.AreEqual("", propertyGroup.GenerateAssemblyInfo);
                 } else {
                     Assert.AreEqual("", propertyGroup.AssemblyName);
                     Assert.AreEqual(propertyGroup.Condition.Contains("Debug|") ? "" : "PakledConsumerCore.nuspec", propertyGroup.NuspecFile);
