@@ -3,6 +3,9 @@
         string AssemblyName { get; set; }
         string Condition { get; set; }
         string RootNamespace { get; set; }
+        string RepositoryType { get; set; }
+        string RepositoryUrl { get; set; }
+        string RepositoryBranch { get; set; }
         string IntermediateOutputPath { get; set; }
         string OutputPath { get; set; }
         string UseVsHostingProcess { get; set; }

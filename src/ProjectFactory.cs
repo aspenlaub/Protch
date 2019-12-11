@@ -48,7 +48,10 @@ namespace Aspenlaub.Net.GitHub.CSharp.Protch {
                 ProjectFileFullName = projectFileFullName,
                 ProjectName = ProjectName(solutionFileFullName, projectFileInfo),
                 TargetFramework = targetFrameworkElement?.Value ?? "",
-                RootNamespace = propertyGroups.FirstOrDefault(p => p.RootNamespace != "")?.RootNamespace ?? ""
+                RootNamespace = propertyGroups.FirstOrDefault(p => p.RootNamespace != "")?.RootNamespace ?? "",
+                RepositoryType = propertyGroups.FirstOrDefault(p => p.RepositoryType != "")?.RepositoryType ?? "",
+                RepositoryUrl = propertyGroups.FirstOrDefault(p => p.RepositoryType != "")?.RepositoryUrl ?? "",
+                RepositoryBranch = propertyGroups.FirstOrDefault(p => p.RepositoryType != "")?.RepositoryBranch ?? ""
             };
 
             foreach (var propertyGroup in propertyGroups) {
@@ -97,6 +100,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.Protch {
             var propertyGroup = new PropertyGroup {
                 AssemblyName = propertyGroupElement?.XPathSelectElement(namespaceSelector + "AssemblyName", NamespaceManager)?.Value ?? "",
                 RootNamespace = propertyGroupElement?.XPathSelectElement(namespaceSelector + "RootNamespace", NamespaceManager)?.Value ?? "",
+                RepositoryType = propertyGroupElement?.XPathSelectElement(namespaceSelector + "RepositoryType", NamespaceManager)?.Value ?? "",
+                RepositoryUrl = propertyGroupElement?.XPathSelectElement(namespaceSelector + "RepositoryUrl", NamespaceManager)?.Value ?? "",
+                RepositoryBranch = propertyGroupElement?.XPathSelectElement(namespaceSelector + "RepositoryBranch", NamespaceManager)?.Value ?? "",
                 OutputPath = propertyGroupElement?.XPathSelectElement(namespaceSelector + "OutputPath", NamespaceManager)?.Value ?? "",
                 IntermediateOutputPath = propertyGroupElement?.XPathSelectElement(namespaceSelector + "IntermediateOutputPath", NamespaceManager)?.Value ?? "",
                 UseVsHostingProcess = propertyGroupElement?.XPathSelectElement(namespaceSelector + "UseVSHostingProcess", NamespaceManager)?.Value ?? "",

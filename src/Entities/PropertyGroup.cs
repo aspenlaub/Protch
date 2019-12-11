@@ -8,6 +8,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.Protch.Entities {
         public string AssemblyName { get; set; }
         public string Condition { get; set; }
         public string RootNamespace { get; set; }
+        public string RepositoryType { get; set; }
+        public string RepositoryUrl { get; set; }
+        public string RepositoryBranch { get; set; }
         public string IntermediateOutputPath { get; set; }
         public string OutputPath { get; set; }
         public string UseVsHostingProcess { get; set; }

@@ -75,6 +75,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.Protch.Test {
             Assert.AreEqual((object) PakledConsumerCoreTarget.SolutionId, project.ProjectName);
             Assert.AreEqual("netcoreapp3.0", project.TargetFramework);
             Assert.AreEqual(3, project.PropertyGroups.Count);
+            Assert.AreEqual("git", project.RepositoryType);
+            Assert.AreEqual(url, project.RepositoryUrl);
+            Assert.AreEqual("master", project.RepositoryBranch);
             var rootNamespace = "";
             foreach (var propertyGroup in project.PropertyGroups) {
                 Assert.IsNotNull(propertyGroup);
@@ -140,6 +143,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.Protch.Test {
             Assert.AreEqual((object) ChabStandardTarget.SolutionId, project.ProjectName);
             Assert.AreEqual("netstandard2.0", project.TargetFramework);
             Assert.AreEqual(3, project.PropertyGroups.Count);
+            Assert.AreEqual("git", project.RepositoryType);
+            Assert.AreEqual(url, project.RepositoryUrl);
+            Assert.AreEqual("master", project.RepositoryBranch);
             var rootNamespace = "";
             foreach (var propertyGroup in project.PropertyGroups) {
                 Assert.IsNotNull(propertyGroup);
