@@ -9,6 +9,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Protch.Interfaces {
         string RepositoryType { get; set; }
         string RepositoryUrl { get; set; }
         string RepositoryBranch { get; set; }
+        string PackageId { get; set; }
 
         IList<string> ReferencedDllFiles { get; }
         IList<IPropertyGroup> PropertyGroups { get; }

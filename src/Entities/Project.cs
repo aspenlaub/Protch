@@ -10,6 +10,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Protch.Entities {
         public string RepositoryType { get; set; }
         public string RepositoryUrl { get; set; }
         public string RepositoryBranch { get; set; }
+        public string PackageId { get; set; }
 
         public IList<IPropertyGroup> PropertyGroups { get; }
 

@@ -51,7 +51,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.Protch {
                 RootNamespace = propertyGroups.FirstOrDefault(p => p.RootNamespace != "")?.RootNamespace ?? "",
                 RepositoryType = propertyGroups.FirstOrDefault(p => p.RepositoryType != "")?.RepositoryType ?? "",
                 RepositoryUrl = propertyGroups.FirstOrDefault(p => p.RepositoryType != "")?.RepositoryUrl ?? "",
-                RepositoryBranch = propertyGroups.FirstOrDefault(p => p.RepositoryType != "")?.RepositoryBranch ?? ""
+                RepositoryBranch = propertyGroups.FirstOrDefault(p => p.RepositoryType != "")?.RepositoryBranch ?? "",
+                PackageId = propertyGroups.FirstOrDefault(p => p.PackageId != "")?.PackageId ?? ""
             };
 
             foreach (var propertyGroup in propertyGroups) {
@@ -103,6 +104,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Protch {
                 RepositoryType = propertyGroupElement?.XPathSelectElement(namespaceSelector + "RepositoryType", NamespaceManager)?.Value ?? "",
                 RepositoryUrl = propertyGroupElement?.XPathSelectElement(namespaceSelector + "RepositoryUrl", NamespaceManager)?.Value ?? "",
                 RepositoryBranch = propertyGroupElement?.XPathSelectElement(namespaceSelector + "RepositoryBranch", NamespaceManager)?.Value ?? "",
+                PackageId = propertyGroupElement?.XPathSelectElement(namespaceSelector + "PackageId", NamespaceManager)?.Value ?? "",
                 OutputPath = propertyGroupElement?.XPathSelectElement(namespaceSelector + "OutputPath", NamespaceManager)?.Value ?? "",
                 IntermediateOutputPath = propertyGroupElement?.XPathSelectElement(namespaceSelector + "IntermediateOutputPath", NamespaceManager)?.Value ?? "",
                 UseVsHostingProcess = propertyGroupElement?.XPathSelectElement(namespaceSelector + "UseVSHostingProcess", NamespaceManager)?.Value ?? "",

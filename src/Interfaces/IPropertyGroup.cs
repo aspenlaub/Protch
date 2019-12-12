@@ -6,6 +6,7 @@
         string RepositoryType { get; set; }
         string RepositoryUrl { get; set; }
         string RepositoryBranch { get; set; }
+        string PackageId { get; set; }
         string IntermediateOutputPath { get; set; }
         string OutputPath { get; set; }
         string UseVsHostingProcess { get; set; }

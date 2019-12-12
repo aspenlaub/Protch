@@ -78,6 +78,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Protch.Test {
             Assert.AreEqual("git", project.RepositoryType);
             Assert.AreEqual(url, project.RepositoryUrl);
             Assert.AreEqual("master", project.RepositoryBranch);
+            Assert.AreEqual("", project.PackageId);
             var rootNamespace = "";
             foreach (var propertyGroup in project.PropertyGroups) {
                 Assert.IsNotNull(propertyGroup);
@@ -146,6 +147,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Protch.Test {
             Assert.AreEqual("git", project.RepositoryType);
             Assert.AreEqual(url, project.RepositoryUrl);
             Assert.AreEqual("master", project.RepositoryBranch);
+            Assert.AreEqual("ChabStandard", project.PackageId);
             var rootNamespace = "";
             foreach (var propertyGroup in project.PropertyGroups) {
                 Assert.IsNotNull(propertyGroup);
