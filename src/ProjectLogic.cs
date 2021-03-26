@@ -4,7 +4,9 @@ using Aspenlaub.Net.GitHub.CSharp.Protch.Interfaces;
 namespace Aspenlaub.Net.GitHub.CSharp.Protch {
     public class ProjectLogic : IProjectLogic {
         public bool IsANetStandardOrCoreProject(IProject project) {
-            return project.TargetFramework.Contains("netstandard") || project.TargetFramework.Contains("netcore");
+            return project.TargetFramework.Contains("netstandard")
+                   || project.TargetFramework.Contains("netcore")
+                   || project.TargetFramework.Contains("net5");
         }
 
         public bool TargetsOldFramework(IProject project) {
