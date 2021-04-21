@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Linq;
 using Aspenlaub.Net.GitHub.CSharp.Gitty;
+using Aspenlaub.Net.GitHub.CSharp.Gitty.Components;
 using Aspenlaub.Net.GitHub.CSharp.Gitty.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.Gitty.TestUtilities;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Components;
@@ -18,26 +19,12 @@ namespace Aspenlaub.Net.GitHub.CSharp.Protch.Test {
         protected static TestTargetFolder PakledConsumerCoreTarget = new TestTargetFolder(nameof(ProjectFactoryTest), "PakledConsumerCore");
         protected static TestTargetFolder ChabStandardTarget = new TestTargetFolder(nameof(ProjectFactoryTest), "ChabStandard");
         private static IContainer vContainer;
-        protected static TestTargetInstaller TargetInstaller;
-        protected static TestTargetRunner TargetRunner;
+        protected static ITestTargetRunner TargetRunner;
 
         [ClassInitialize]
         public static void ClassInitialize(TestContext context) {
             vContainer = new ContainerBuilder().UseGittyAndPegh(new DummyCsArgumentPrompter()).UseGittyTestUtilities().UseProtch().Build();
-            TargetInstaller = vContainer.Resolve<TestTargetInstaller>();
-            TargetRunner = vContainer.Resolve<TestTargetRunner>();
-            TargetInstaller.DeleteCakeFolder(PakledConsumerCoreTarget);
-            TargetInstaller.CreateCakeFolder(PakledConsumerCoreTarget, out var errorsAndInfos);
-            Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsPlusRelevantInfos());
-            TargetInstaller.DeleteCakeFolder(ChabStandardTarget);
-            TargetInstaller.CreateCakeFolder(ChabStandardTarget, out errorsAndInfos);
-            Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsPlusRelevantInfos());
-        }
-
-        [ClassCleanup]
-        public static void ClassCleanup() {
-            TargetInstaller.DeleteCakeFolder(PakledConsumerCoreTarget);
-            TargetInstaller.DeleteCakeFolder(ChabStandardTarget);
+            TargetRunner = vContainer.Resolve<ITestTargetRunner>();
         }
 
         [TestInitialize]

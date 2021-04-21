@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <AssemblyName>Aspenlaub.Net.GitHub.CSharp.Protch</AssemblyName>
     <RootNamespace>Aspenlaub.Net.GitHub.CSharp.Protch</RootNamespace>
     <GenerateBuildInfoConfigFile>false</GenerateBuildInfoConfigFile>
@@ -9,13 +9,13 @@
     <Deterministic>false</Deterministic>
     <AssemblyTitle>Aspenlaub.Net.GitHub.CSharp.Protch</AssemblyTitle>
     <AssemblyProduct>Aspenlaub.Net.GitHub.CSharp.Protch</AssemblyProduct>
-    <VersionDays>$([System.DateTime]::UtcNow.Subtract($([System.DateTime]::Parse("2019-07-24"))).Days.ToString())</VersionDays>
-    <VersionMinutes>$([System.Math]::Floor($([System.DateTime]::UtcNow.Subtract($([System.DateTime]::UtcNow.Date)).TotalMinutes)).ToString())</VersionMinutes>
-    <Version>2.0.$(VersionDays).$(VersionMinutes)</Version>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/aspenlaub/Protch.git</RepositoryUrl>
     <RepositoryBranch>master</RepositoryBranch>
     <PackageId>Protch</PackageId>
+    <VersionDays>$([System.DateTime]::UtcNow.Subtract($([System.DateTime]::Parse("2019-07-24"))).Days.ToString())</VersionDays>
+    <VersionMinutes>$([System.Math]::Floor($([System.DateTime]::UtcNow.Subtract($([System.DateTime]::UtcNow.Date)).TotalMinutes)).ToString())</VersionMinutes>
+    <Version>2.0.$(VersionDays).$(VersionMinutes)</Version>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
@@ -35,6 +35,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Pegh" Version="2.0.610.1049" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -48,11 +51,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Update="packageicon.ico">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Pegh" Version="2.0.610.1049" />
+    <Folder Include="Interfaces\" />
+    <Folder Include="Entities\" />
   </ItemGroup>
 </Project>
