@@ -17,7 +17,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Protch.Test {
     [TestClass]
     public class ProjectFactoryTest {
         protected static TestTargetFolder PakledConsumerCoreTarget = new(nameof(ProjectFactoryTest), "PakledConsumerCore");
-        protected static TestTargetFolder ChabStandardTarget = new(nameof(ProjectFactoryTest), "ChabStandard");
+        protected static TestTargetFolder ChabTarget = new(nameof(ProjectFactoryTest), "Chab");
         private static IContainer vContainer;
         protected static ITestTargetRunner TargetRunner;
 
@@ -30,13 +30,13 @@ namespace Aspenlaub.Net.GitHub.CSharp.Protch.Test {
         [TestInitialize]
         public void Initialize() {
             PakledConsumerCoreTarget.Delete();
-            ChabStandardTarget.Delete();
+            ChabTarget.Delete();
         }
 
         [TestCleanup]
         public void TestCleanup() {
             PakledConsumerCoreTarget.Delete();
-            ChabStandardTarget.Delete();
+            ChabTarget.Delete();
         }
 
         [TestMethod]
@@ -109,16 +109,16 @@ namespace Aspenlaub.Net.GitHub.CSharp.Protch.Test {
         }
 
         [TestMethod]
-        public void CanLoadChabStandardProject() {
+        public void CanLoadChabProject() {
             var gitUtilities = new GitUtilities();
             var errorsAndInfos = new ErrorsAndInfos();
-            const string url = "https://github.com/aspenlaub/ChabStandard.git";
-            gitUtilities.Clone(url, "master", ChabStandardTarget.Folder(), new CloneOptions { BranchName = "master" }, true, errorsAndInfos);
+            const string url = "https://github.com/aspenlaub/Chab.git";
+            gitUtilities.Clone(url, "master", ChabTarget.Folder(), new CloneOptions { BranchName = "master" }, true, errorsAndInfos);
             Assert.IsFalse(errorsAndInfos.Errors.Any(), errorsAndInfos.ErrorsPlusRelevantInfos());
-            gitUtilities.Pull(ChabStandardTarget.Folder(), "UserName", "user.name@aspenlaub.org");
+            gitUtilities.Pull(ChabTarget.Folder(), "UserName", "user.name@aspenlaub.org");
 
-            var solutionFileFullName = ChabStandardTarget.Folder().SubFolder("src").FullName + @"\" + ChabStandardTarget.SolutionId + ".sln";
-            var projectFileFullName = ChabStandardTarget.Folder().SubFolder("src").FullName + @"\" + ChabStandardTarget.SolutionId + ".csproj";
+            var solutionFileFullName = ChabTarget.Folder().SubFolder("src").FullName + @"\" + ChabTarget.SolutionId + ".sln";
+            var projectFileFullName = ChabTarget.Folder().SubFolder("src").FullName + @"\" + ChabTarget.SolutionId + ".csproj";
             Assert.IsTrue(File.Exists(projectFileFullName));
             var sut = vContainer.Resolve<IProjectFactory>();
             var project = sut.Load(solutionFileFullName, projectFileFullName, errorsAndInfos);
@@ -128,20 +128,20 @@ namespace Aspenlaub.Net.GitHub.CSharp.Protch.Test {
             Assert.IsFalse(errorsAndInfos.Errors.Any(), errorsAndInfos.ErrorsPlusRelevantInfos());
             Assert.IsNotNull(project);
             Assert.AreEqual(projectFileFullName, project.ProjectFileFullName);
-            Assert.AreEqual((object) ChabStandardTarget.SolutionId, project.ProjectName);
-            Assert.AreEqual("netstandard2.0", project.TargetFramework);
+            Assert.AreEqual((object) ChabTarget.SolutionId, project.ProjectName);
+            Assert.AreEqual("net5.0", project.TargetFramework);
             Assert.AreEqual(3, project.PropertyGroups.Count);
             Assert.AreEqual("git", project.RepositoryType);
             Assert.AreEqual(url, project.RepositoryUrl);
             Assert.AreEqual("master", project.RepositoryBranch);
-            Assert.AreEqual("ChabStandard", project.PackageId);
+            Assert.AreEqual("Chab", project.PackageId);
             var rootNamespace = "";
             foreach (var propertyGroup in project.PropertyGroups) {
                 Assert.IsNotNull(propertyGroup);
                 Assert.AreEqual((object) propertyGroup.AssemblyName, propertyGroup.RootNamespace);
                 if (propertyGroup.Condition == "") {
                     rootNamespace = propertyGroup.RootNamespace;
-                    Assert.IsTrue(propertyGroup.AssemblyName.StartsWith("Aspenlaub.Net.GitHub.CSharp." + ChabStandardTarget.SolutionId), $"Unexpected assembly name \"{propertyGroup.AssemblyName}\"");
+                    Assert.IsTrue(propertyGroup.AssemblyName.StartsWith("Aspenlaub.Net.GitHub.CSharp." + ChabTarget.SolutionId), $"Unexpected assembly name \"{propertyGroup.AssemblyName}\"");
                     Assert.AreEqual("", propertyGroup.UseVsHostingProcess);
                     Assert.AreEqual("false", propertyGroup.GenerateBuildInfoConfigFile);
                     Assert.AreEqual("", propertyGroup.IntermediateOutputPath);
@@ -164,7 +164,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Protch.Test {
                         Assert.AreEqual("", propertyGroup.OutputPath);
                         Assert.AreEqual("", propertyGroup.AppendTargetFrameworkToOutputPath);
                         Assert.AreEqual("", propertyGroup.AllowUnsafeBlocks);
-                        Assert.AreEqual("ChabStandard.nuspec", propertyGroup.NuspecFile);
+                        Assert.AreEqual("Chab.nuspec", propertyGroup.NuspecFile);
                     }
                     Assert.AreEqual("", propertyGroup.GenerateBuildInfoConfigFile);
                     Assert.AreEqual("", propertyGroup.Deterministic);
@@ -176,13 +176,13 @@ namespace Aspenlaub.Net.GitHub.CSharp.Protch.Test {
 
             Assert.AreEqual(rootNamespace, project.RootNamespace);
 
-            projectFileFullName = ChabStandardTarget.Folder().SubFolder("src").FullName + @"\Test\" + ChabStandardTarget.SolutionId + ".Test.csproj";
+            projectFileFullName = ChabTarget.Folder().SubFolder("src").FullName + @"\Test\" + ChabTarget.SolutionId + ".Test.csproj";
             Assert.IsTrue(File.Exists(projectFileFullName));
             project = sut.Load(solutionFileFullName, projectFileFullName, errorsAndInfos);
             Assert.IsFalse(errorsAndInfos.Errors.Any(), errorsAndInfos.ErrorsPlusRelevantInfos());
             Assert.IsNotNull(project);
             Assert.AreEqual(projectFileFullName, project.ProjectFileFullName);
-            Assert.AreEqual(ChabStandardTarget.SolutionId + ".Test", project.ProjectName);
+            Assert.AreEqual(ChabTarget.SolutionId + ".Test", project.ProjectName);
         }
     }
 }
