@@ -16,8 +16,8 @@ using IContainer = Autofac.IContainer;
 namespace Aspenlaub.Net.GitHub.CSharp.Protch.Test {
     [TestClass]
     public class ProjectFactoryTest {
-        protected static TestTargetFolder PakledConsumerCoreTarget = new TestTargetFolder(nameof(ProjectFactoryTest), "PakledConsumerCore");
-        protected static TestTargetFolder ChabStandardTarget = new TestTargetFolder(nameof(ProjectFactoryTest), "ChabStandard");
+        protected static TestTargetFolder PakledConsumerCoreTarget = new(nameof(ProjectFactoryTest), "PakledConsumerCore");
+        protected static TestTargetFolder ChabStandardTarget = new(nameof(ProjectFactoryTest), "ChabStandard");
         private static IContainer vContainer;
         protected static ITestTargetRunner TargetRunner;
 
@@ -54,8 +54,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.Protch.Test {
             var sut = vContainer.Resolve<IProjectFactory>();
             var project = sut.Load(solutionFileFullName, projectFileFullName, errorsAndInfos);
             var projectLogic = vContainer.Resolve<IProjectLogic>();
-            Assert.IsTrue(projectLogic.IsANetStandardOrCoreProject(project));
-            Assert.IsTrue(projectLogic.DoAllNetStandardOrCoreConfigurationsHaveNuspecs(project));
+            Assert.IsTrue(!projectLogic.TargetsOldFramework(project));
+            Assert.IsTrue(projectLogic.DoAllConfigurationsHaveNuspecs(project));
             Assert.IsFalse(errorsAndInfos.Errors.Any(), errorsAndInfos.ErrorsPlusRelevantInfos());
             Assert.IsNotNull(project);
             Assert.AreEqual(projectFileFullName, project.ProjectFileFullName);
@@ -123,8 +123,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.Protch.Test {
             var sut = vContainer.Resolve<IProjectFactory>();
             var project = sut.Load(solutionFileFullName, projectFileFullName, errorsAndInfos);
             var projectLogic = vContainer.Resolve<IProjectLogic>();
-            Assert.IsTrue(projectLogic.IsANetStandardOrCoreProject(project));
-            Assert.IsTrue(projectLogic.DoAllNetStandardOrCoreConfigurationsHaveNuspecs(project));
+            Assert.IsTrue(!projectLogic.TargetsOldFramework(project));
+            Assert.IsTrue(projectLogic.DoAllConfigurationsHaveNuspecs(project));
             Assert.IsFalse(errorsAndInfos.Errors.Any(), errorsAndInfos.ErrorsPlusRelevantInfos());
             Assert.IsNotNull(project);
             Assert.AreEqual(projectFileFullName, project.ProjectFileFullName);
