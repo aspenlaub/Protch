@@ -18,13 +18,13 @@ namespace Aspenlaub.Net.GitHub.CSharp.Protch.Test {
     public class ProjectFactoryTest {
         protected static TestTargetFolder PakledConsumerTarget = new(nameof(ProjectFactoryTest), "PakledConsumer");
         protected static TestTargetFolder ChabTarget = new(nameof(ProjectFactoryTest), "Chab");
-        private static IContainer vContainer;
+        private static IContainer Container;
         protected static ITestTargetRunner TargetRunner;
 
         [ClassInitialize]
-        public static void ClassInitialize(TestContext context) {
-            vContainer = new ContainerBuilder().UseGittyAndPegh(new DummyCsArgumentPrompter()).UseGittyTestUtilities().UseProtch().Build();
-            TargetRunner = vContainer.Resolve<ITestTargetRunner>();
+        public static void ClassInitialize(TestContext _) {
+            Container = new ContainerBuilder().UseGittyAndPegh(new DummyCsArgumentPrompter()).UseGittyTestUtilities().UseProtch().Build();
+            TargetRunner = Container.Resolve<ITestTargetRunner>();
         }
 
         [TestInitialize]
@@ -51,9 +51,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.Protch.Test {
             var solutionFileFullName = PakledConsumerTarget.Folder().SubFolder("src").FullName + @"\" + PakledConsumerTarget.SolutionId + ".sln";
             var projectFileFullName = PakledConsumerTarget.Folder().SubFolder("src").FullName + @"\" + PakledConsumerTarget.SolutionId + ".csproj";
             Assert.IsTrue(File.Exists(projectFileFullName));
-            var sut = vContainer.Resolve<IProjectFactory>();
+            var sut = Container.Resolve<IProjectFactory>();
             var project = sut.Load(solutionFileFullName, projectFileFullName, errorsAndInfos);
-            var projectLogic = vContainer.Resolve<IProjectLogic>();
+            var projectLogic = Container.Resolve<IProjectLogic>();
             Assert.IsTrue(!projectLogic.TargetsOldFramework(project));
             Assert.IsTrue(projectLogic.DoAllConfigurationsHaveNuspecs(project));
             Assert.IsFalse(errorsAndInfos.Errors.Any(), errorsAndInfos.ErrorsPlusRelevantInfos());
@@ -120,9 +120,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.Protch.Test {
             var solutionFileFullName = ChabTarget.Folder().SubFolder("src").FullName + @"\" + ChabTarget.SolutionId + ".sln";
             var projectFileFullName = ChabTarget.Folder().SubFolder("src").FullName + @"\" + ChabTarget.SolutionId + ".csproj";
             Assert.IsTrue(File.Exists(projectFileFullName));
-            var sut = vContainer.Resolve<IProjectFactory>();
+            var sut = Container.Resolve<IProjectFactory>();
             var project = sut.Load(solutionFileFullName, projectFileFullName, errorsAndInfos);
-            var projectLogic = vContainer.Resolve<IProjectLogic>();
+            var projectLogic = Container.Resolve<IProjectLogic>();
             Assert.IsTrue(!projectLogic.TargetsOldFramework(project));
             Assert.IsTrue(projectLogic.DoAllConfigurationsHaveNuspecs(project));
             Assert.IsFalse(errorsAndInfos.Errors.Any(), errorsAndInfos.ErrorsPlusRelevantInfos());
