@@ -13,12 +13,9 @@ public class Project : IProject {
     public string RepositoryBranch { get; set; }
     public string PackageId { get; set; }
 
-    public IList<IPropertyGroup> PropertyGroups { get; }
+    public IList<IPropertyGroup> PropertyGroups { get; } = new List<IPropertyGroup>();
 
-    public IList<string> ReferencedDllFiles { get; }
+    public IList<string> ReferencedDllFiles { get; } = new List<string>();
 
-    public Project() {
-        PropertyGroups = new List<IPropertyGroup>();
-        ReferencedDllFiles = new List<string>();
-    }
+    public IList<IPackageReference> PackageReferences { get; } = new List<IPackageReference>();
 }

@@ -14,4 +14,5 @@ public interface IProject {
 
     IList<string> ReferencedDllFiles { get; }
     IList<IPropertyGroup> PropertyGroups { get; }
+    IList<IPackageReference> PackageReferences { get; }
 }

@@ -44,6 +44,9 @@ public class ProjectFactory : IProjectFactory {
         var dllFileFullNames = cpDllFileFullNames.Any() ? cpDllFileFullNames : document.XPathSelectElements("./Project/ItemGroup/Reference/HintPath", NamespaceManager).Select(x => DllFileFullName(projectFileInfo.DirectoryName, x)).ToList();
         var targetFrameworkCpElement = document.XPathSelectElements("./cp:Project/cp:PropertyGroup/cp:TargetFrameworkVersion", NamespaceManager).FirstOrDefault();
         var targetFrameworkElement = document.XPathSelectElements("./Project/PropertyGroup/TargetFramework", NamespaceManager).FirstOrDefault() ?? targetFrameworkCpElement;
+        var packageReferences = document.XPathSelectElements("//PackageReference")
+            .Where(r => !string.IsNullOrEmpty(r.Attribute("Include")?.Value) && !string.IsNullOrEmpty(r.Attribute("Version")?.Value))
+            .Select(r => new PackageReference { Id = r.Attribute("Include")?.Value, Version = r.Attribute("Version")?.Value });
 
         var project = new Project {
             ProjectFileFullName = projectFileFullName,
@@ -62,6 +65,10 @@ public class ProjectFactory : IProjectFactory {
 
         foreach(var dllFileFullName in dllFileFullNames) {
             project.ReferencedDllFiles.Add(dllFileFullName);
+        }
+
+        foreach (var packageReference in packageReferences) {
+            project.PackageReferences.Add(packageReference);
         }
 
         return project;

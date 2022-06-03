@@ -100,6 +100,9 @@ public class ProjectFactoryTest {
 
         Assert.AreEqual(rootNamespace, project.RootNamespace);
 
+        Assert.AreEqual(1, project.PackageReferences.Count);
+        Assert.AreEqual("Pakled", project.PackageReferences[0].Id);
+
         projectFileFullName = PakledConsumerTarget.Folder().SubFolder("src").FullName + @"\Test\" + PakledConsumerTarget.SolutionId + ".Test.csproj";
         Assert.IsTrue(File.Exists(projectFileFullName));
         project = sut.Load(solutionFileFullName, projectFileFullName, errorsAndInfos);
@@ -176,6 +179,11 @@ public class ProjectFactoryTest {
         Assert.AreEqual(0, project.ReferencedDllFiles.Count);
 
         Assert.AreEqual(rootNamespace, project.RootNamespace);
+
+        Assert.AreEqual(3, project.PackageReferences.Count);
+        Assert.AreEqual("Autofac", project.PackageReferences[0].Id);
+        Assert.AreEqual("LibGit2Sharp", project.PackageReferences[1].Id);
+        Assert.AreEqual("Newtonsoft.Json", project.PackageReferences[2].Id);
 
         projectFileFullName = ChabTarget.Folder().SubFolder("src").FullName + @"\Test\" + ChabTarget.SolutionId + ".Test.csproj";
         Assert.IsTrue(File.Exists(projectFileFullName));
