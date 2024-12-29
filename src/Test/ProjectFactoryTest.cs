@@ -19,13 +19,13 @@ namespace Aspenlaub.Net.GitHub.CSharp.Protch.Test;
 public class ProjectFactoryTest {
     protected static TestTargetFolder PakledConsumerTarget = new(nameof(ProjectFactoryTest), "PakledConsumer");
     protected static TestTargetFolder ChabTarget = new(nameof(ProjectFactoryTest), "Chab");
-    private static IContainer Container;
+    private static IContainer _container;
     protected static ITestTargetRunner TargetRunner;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext _) {
-        Container = new ContainerBuilder().UseGittyAndPegh("Protch", new DummyCsArgumentPrompter()).UseGittyTestUtilities().UseProtch().Build();
-        TargetRunner = Container.Resolve<ITestTargetRunner>();
+        _container = new ContainerBuilder().UseGittyAndPegh("Protch", new DummyCsArgumentPrompter()).UseGittyTestUtilities().UseProtch().Build();
+        TargetRunner = _container.Resolve<ITestTargetRunner>();
     }
 
     [TestInitialize]
@@ -52,9 +52,9 @@ public class ProjectFactoryTest {
         var solutionFileFullName = PakledConsumerTarget.Folder().SubFolder("src").FullName + @"\" + PakledConsumerTarget.SolutionId + ".sln";
         var projectFileFullName = PakledConsumerTarget.Folder().SubFolder("src").FullName + @"\" + PakledConsumerTarget.SolutionId + ".csproj";
         Assert.IsTrue(File.Exists(projectFileFullName));
-        var sut = Container.Resolve<IProjectFactory>();
+        var sut = _container.Resolve<IProjectFactory>();
         var project = sut.Load(solutionFileFullName, projectFileFullName, errorsAndInfos);
-        var projectLogic = Container.Resolve<IProjectLogic>();
+        var projectLogic = _container.Resolve<IProjectLogic>();
         Assert.IsTrue(!projectLogic.TargetsOldFramework(project));
         Assert.IsTrue(projectLogic.DoAllConfigurationsHaveNuspecs(project));
         Assert.IsFalse(errorsAndInfos.Errors.Any(), errorsAndInfos.ErrorsPlusRelevantInfos());
@@ -124,9 +124,9 @@ public class ProjectFactoryTest {
         var solutionFileFullName = ChabTarget.Folder().SubFolder("src").FullName + @"\" + ChabTarget.SolutionId + ".sln";
         var projectFileFullName = ChabTarget.Folder().SubFolder("src").FullName + @"\" + ChabTarget.SolutionId + ".csproj";
         Assert.IsTrue(File.Exists(projectFileFullName));
-        var sut = Container.Resolve<IProjectFactory>();
+        var sut = _container.Resolve<IProjectFactory>();
         var project = sut.Load(solutionFileFullName, projectFileFullName, errorsAndInfos);
-        var projectLogic = Container.Resolve<IProjectLogic>();
+        var projectLogic = _container.Resolve<IProjectLogic>();
         Assert.IsTrue(!projectLogic.TargetsOldFramework(project));
         Assert.IsTrue(projectLogic.DoAllConfigurationsHaveNuspecs(project));
         Assert.IsFalse(errorsAndInfos.Errors.Any(), errorsAndInfos.ErrorsPlusRelevantInfos());
