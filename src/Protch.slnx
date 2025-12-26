@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Protch.csproj" />
+  <Project Path="Test/Protch.Test.csproj" />
+</Solution>

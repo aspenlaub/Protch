@@ -17,27 +17,25 @@ namespace Aspenlaub.Net.GitHub.CSharp.Protch.Test;
 
 [TestClass]
 public class ProjectFactoryTest {
-    protected static TestTargetFolder PakledConsumerTarget = new(nameof(ProjectFactoryTest), "PakledConsumer");
-    protected static TestTargetFolder ChabTarget = new(nameof(ProjectFactoryTest), "Chab");
+    private static readonly TestTargetFolder _pakledConsumerTarget = new(nameof(ProjectFactoryTest), "PakledConsumer");
+    private static readonly TestTargetFolder _chabTarget = new(nameof(ProjectFactoryTest), "Chab");
     private static IContainer _container;
-    protected static ITestTargetRunner TargetRunner;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext _) {
         _container = new ContainerBuilder().UseGittyAndPegh("Protch", new DummyCsArgumentPrompter()).UseGittyTestUtilities().UseProtch().Build();
-        TargetRunner = _container.Resolve<ITestTargetRunner>();
     }
 
     [TestInitialize]
     public void Initialize() {
-        PakledConsumerTarget.Delete();
-        ChabTarget.Delete();
+        _pakledConsumerTarget.Delete();
+        _chabTarget.Delete();
     }
 
     [TestCleanup]
     public void TestCleanup() {
-        PakledConsumerTarget.Delete();
-        ChabTarget.Delete();
+        _pakledConsumerTarget.Delete();
+        _chabTarget.Delete();
     }
 
     [TestMethod]
@@ -45,35 +43,35 @@ public class ProjectFactoryTest {
         var gitUtilities = new GitUtilities();
         var errorsAndInfos = new ErrorsAndInfos();
         const string url = "https://github.com/aspenlaub/PakledConsumer.git";
-        gitUtilities.Clone(url, "master", PakledConsumerTarget.Folder(), new CloneOptions { BranchName = "master" }, true, errorsAndInfos);
+        gitUtilities.Clone(url, "master", _pakledConsumerTarget.Folder(), new CloneOptions { BranchName = "master" }, true, errorsAndInfos);
         Assert.IsFalse(errorsAndInfos.Errors.Any(), errorsAndInfos.ErrorsPlusRelevantInfos());
-        gitUtilities.Pull(PakledConsumerTarget.Folder(), "UserName", "user.name@aspenlaub.org");
+        gitUtilities.Pull(_pakledConsumerTarget.Folder(), "UserName", "user.name@aspenlaub.org");
 
-        var solutionFileFullName = PakledConsumerTarget.Folder().SubFolder("src").FullName + @"\" + PakledConsumerTarget.SolutionId + ".sln";
-        var projectFileFullName = PakledConsumerTarget.Folder().SubFolder("src").FullName + @"\" + PakledConsumerTarget.SolutionId + ".csproj";
+        string solutionFileFullName = _pakledConsumerTarget.Folder().SubFolder("src").FullName + @"\" + _pakledConsumerTarget.SolutionId + ".slnx";
+        string projectFileFullName = _pakledConsumerTarget.Folder().SubFolder("src").FullName + @"\" + _pakledConsumerTarget.SolutionId + ".csproj";
         Assert.IsTrue(File.Exists(projectFileFullName));
-        var sut = _container.Resolve<IProjectFactory>();
-        var project = sut.Load(solutionFileFullName, projectFileFullName, errorsAndInfos);
-        var projectLogic = _container.Resolve<IProjectLogic>();
-        Assert.IsTrue(!projectLogic.TargetsOldFramework(project));
+        IProjectFactory sut = _container.Resolve<IProjectFactory>();
+        IProject project = sut.Load(solutionFileFullName, projectFileFullName, errorsAndInfos);
+        IProjectLogic projectLogic = _container.Resolve<IProjectLogic>();
+        Assert.IsFalse(projectLogic.TargetsOldFramework(project));
         Assert.IsTrue(projectLogic.DoAllConfigurationsHaveNuspecs(project));
         Assert.IsFalse(errorsAndInfos.Errors.Any(), errorsAndInfos.ErrorsPlusRelevantInfos());
         Assert.IsNotNull(project);
         Assert.AreEqual(projectFileFullName, project.ProjectFileFullName);
-        Assert.AreEqual((object) PakledConsumerTarget.SolutionId, project.ProjectName);
+        Assert.AreEqual((object) _pakledConsumerTarget.SolutionId, project.ProjectName);
         Assert.AreEqual("net10.0", project.TargetFramework);
-        Assert.AreEqual(3, project.PropertyGroups.Count);
+        Assert.HasCount(3, project.PropertyGroups);
         Assert.AreEqual("git", project.RepositoryType);
         Assert.AreEqual(url, project.RepositoryUrl);
         Assert.AreEqual("master", project.RepositoryBranch);
         Assert.AreEqual("PakledConsumer", project.PackageId);
-        var rootNamespace = "";
-        foreach (var propertyGroup in project.PropertyGroups) {
+        string rootNamespace = "";
+        foreach (IPropertyGroup propertyGroup in project.PropertyGroups) {
             Assert.IsNotNull(propertyGroup);
             Assert.AreEqual((object) propertyGroup.AssemblyName, propertyGroup.RootNamespace);
             if (propertyGroup.Condition == "") {
                 rootNamespace = propertyGroup.RootNamespace;
-                Assert.IsTrue(propertyGroup.AssemblyName.StartsWith("Aspenlaub.Net.GitHub.CSharp." + PakledConsumerTarget.SolutionId), $"Unexpected assembly name \"{propertyGroup.AssemblyName}\"");
+                Assert.StartsWith("Aspenlaub.Net.GitHub.CSharp." + _pakledConsumerTarget.SolutionId, propertyGroup.AssemblyName, $"Unexpected assembly name \"{propertyGroup.AssemblyName}\"");
                 Assert.AreEqual("", propertyGroup.UseVsHostingProcess);
                 Assert.AreEqual("false", propertyGroup.GenerateBuildInfoConfigFile);
                 Assert.AreEqual("", propertyGroup.IntermediateOutputPath);
@@ -96,20 +94,20 @@ public class ProjectFactoryTest {
             }
         }
 
-        Assert.AreEqual(0, project.ReferencedDllFiles.Count);
+        Assert.IsEmpty(project.ReferencedDllFiles);
 
         Assert.AreEqual(rootNamespace, project.RootNamespace);
 
-        Assert.AreEqual(1, project.PackageReferences.Count);
+        Assert.HasCount(1, project.PackageReferences);
         Assert.AreEqual("Pakled", project.PackageReferences[0].Id);
 
-        projectFileFullName = PakledConsumerTarget.Folder().SubFolder("src").FullName + @"\Test\" + PakledConsumerTarget.SolutionId + ".Test.csproj";
+        projectFileFullName = _pakledConsumerTarget.Folder().SubFolder("src").FullName + @"\Test\" + _pakledConsumerTarget.SolutionId + ".Test.csproj";
         Assert.IsTrue(File.Exists(projectFileFullName));
         project = sut.Load(solutionFileFullName, projectFileFullName, errorsAndInfos);
         Assert.IsFalse(errorsAndInfos.Errors.Any(), errorsAndInfos.ErrorsPlusRelevantInfos());
         Assert.IsNotNull(project);
         Assert.AreEqual(projectFileFullName, project.ProjectFileFullName);
-        Assert.AreEqual(PakledConsumerTarget.SolutionId + ".Test", project.ProjectName);
+        Assert.AreEqual(_pakledConsumerTarget.SolutionId + ".Test", project.ProjectName);
     }
 
     [TestMethod]
@@ -117,35 +115,35 @@ public class ProjectFactoryTest {
         var gitUtilities = new GitUtilities();
         var errorsAndInfos = new ErrorsAndInfos();
         const string url = "https://github.com/aspenlaub/Chab.git";
-        gitUtilities.Clone(url, "master", ChabTarget.Folder(), new CloneOptions { BranchName = "master" }, true, errorsAndInfos);
+        gitUtilities.Clone(url, "master", _chabTarget.Folder(), new CloneOptions { BranchName = "master" }, true, errorsAndInfos);
         Assert.IsFalse(errorsAndInfos.Errors.Any(), errorsAndInfos.ErrorsPlusRelevantInfos());
-        gitUtilities.Pull(ChabTarget.Folder(), "UserName", "user.name@aspenlaub.org");
+        gitUtilities.Pull(_chabTarget.Folder(), "UserName", "user.name@aspenlaub.org");
 
-        var solutionFileFullName = ChabTarget.Folder().SubFolder("src").FullName + @"\" + ChabTarget.SolutionId + ".sln";
-        var projectFileFullName = ChabTarget.Folder().SubFolder("src").FullName + @"\" + ChabTarget.SolutionId + ".csproj";
+        string solutionFileFullName = _chabTarget.Folder().SubFolder("src").FullName + @"\" + _chabTarget.SolutionId + ".slnx";
+        string projectFileFullName = _chabTarget.Folder().SubFolder("src").FullName + @"\" + _chabTarget.SolutionId + ".csproj";
         Assert.IsTrue(File.Exists(projectFileFullName));
-        var sut = _container.Resolve<IProjectFactory>();
-        var project = sut.Load(solutionFileFullName, projectFileFullName, errorsAndInfos);
-        var projectLogic = _container.Resolve<IProjectLogic>();
-        Assert.IsTrue(!projectLogic.TargetsOldFramework(project));
+        IProjectFactory sut = _container.Resolve<IProjectFactory>();
+        IProject project = sut.Load(solutionFileFullName, projectFileFullName, errorsAndInfos);
+        IProjectLogic projectLogic = _container.Resolve<IProjectLogic>();
+        Assert.IsFalse(projectLogic.TargetsOldFramework(project));
         Assert.IsTrue(projectLogic.DoAllConfigurationsHaveNuspecs(project));
         Assert.IsFalse(errorsAndInfos.Errors.Any(), errorsAndInfos.ErrorsPlusRelevantInfos());
         Assert.IsNotNull(project);
         Assert.AreEqual(projectFileFullName, project.ProjectFileFullName);
-        Assert.AreEqual((object) ChabTarget.SolutionId, project.ProjectName);
+        Assert.AreEqual((object) _chabTarget.SolutionId, project.ProjectName);
         Assert.AreEqual("net10.0", project.TargetFramework);
-        Assert.AreEqual(3, project.PropertyGroups.Count);
+        Assert.HasCount(3, project.PropertyGroups);
         Assert.AreEqual("git", project.RepositoryType);
         Assert.AreEqual(url, project.RepositoryUrl);
         Assert.AreEqual("master", project.RepositoryBranch);
         Assert.AreEqual("Chab", project.PackageId);
-        var rootNamespace = "";
-        foreach (var propertyGroup in project.PropertyGroups) {
+        string rootNamespace = "";
+        foreach (IPropertyGroup propertyGroup in project.PropertyGroups) {
             Assert.IsNotNull(propertyGroup);
             Assert.AreEqual((object) propertyGroup.AssemblyName, propertyGroup.RootNamespace);
             if (propertyGroup.Condition == "") {
                 rootNamespace = propertyGroup.RootNamespace;
-                Assert.IsTrue(propertyGroup.AssemblyName.StartsWith("Aspenlaub.Net.GitHub.CSharp." + ChabTarget.SolutionId), $"Unexpected assembly name \"{propertyGroup.AssemblyName}\"");
+                Assert.StartsWith("Aspenlaub.Net.GitHub.CSharp." + _chabTarget.SolutionId, propertyGroup.AssemblyName, $"Unexpected assembly name \"{propertyGroup.AssemblyName}\"");
                 Assert.AreEqual("", propertyGroup.UseVsHostingProcess);
                 Assert.AreEqual("false", propertyGroup.GenerateBuildInfoConfigFile);
                 Assert.AreEqual("", propertyGroup.IntermediateOutputPath);
@@ -176,19 +174,19 @@ public class ProjectFactoryTest {
             }
         }
 
-        Assert.AreEqual(0, project.ReferencedDllFiles.Count);
+        Assert.IsEmpty(project.ReferencedDllFiles);
 
         Assert.AreEqual(rootNamespace, project.RootNamespace);
 
-        Assert.AreEqual(1, project.PackageReferences.Count);
+        Assert.HasCount(1, project.PackageReferences);
         Assert.AreEqual("Autofac", project.PackageReferences[0].Id);
 
-        projectFileFullName = ChabTarget.Folder().SubFolder("src").FullName + @"\Test\" + ChabTarget.SolutionId + ".Test.csproj";
+        projectFileFullName = _chabTarget.Folder().SubFolder("src").FullName + @"\Test\" + _chabTarget.SolutionId + ".Test.csproj";
         Assert.IsTrue(File.Exists(projectFileFullName));
         project = sut.Load(solutionFileFullName, projectFileFullName, errorsAndInfos);
         Assert.IsFalse(errorsAndInfos.Errors.Any(), errorsAndInfos.ErrorsPlusRelevantInfos());
         Assert.IsNotNull(project);
         Assert.AreEqual(projectFileFullName, project.ProjectFileFullName);
-        Assert.AreEqual(ChabTarget.SolutionId + ".Test", project.ProjectName);
+        Assert.AreEqual(_chabTarget.SolutionId + ".Test", project.ProjectName);
     }
 }
