@@ -138,7 +138,7 @@ public class ProjectFactory : IProjectFactory {
         s = s.Substring(pos + _startTag.Length);
         projectFile = s.Substring(0, s.IndexOf('"'));
         projectName = projectFile.Replace(".csproj", "");
-        pos = projectName.IndexOf('/');
+        pos = projectName.LastIndexOf('/');
         if (pos < 0) { return true; }
 
         projectName = projectName.Substring(pos + 1);
