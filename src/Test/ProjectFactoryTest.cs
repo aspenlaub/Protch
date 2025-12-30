@@ -13,6 +13,7 @@ using LibGit2Sharp;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using IContainer = Autofac.IContainer;
 
+[assembly: DoNotParallelize]
 namespace Aspenlaub.Net.GitHub.CSharp.Protch.Test;
 
 [TestClass]
