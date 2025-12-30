@@ -87,47 +87,20 @@ public class ProjectFactory : IProjectFactory {
 
     protected static string ProjectName(string solutionFileFullName, FileInfo projectFileInfo) {
         string solutionFolder = solutionFileFullName.Substring(0, solutionFileFullName.LastIndexOf('\\'));
-        if (solutionFileFullName.EndsWith(".sln")) {
-            foreach (string s in File.ReadAllLines(solutionFileFullName).ToList().Where(x => x.StartsWith("Project("))) {
-                if (!ExtractProjectLegacy(s, out string projectName, out string projectFile)) { continue; }
+        foreach (string s in File.ReadAllLines(solutionFileFullName)
+                .ToList()
+                .Select(x => x.Trim())
+                .Where(x => x.StartsWith(_startTag))) {
+            if (!ExtractProject(s, out string projectName, out string projectFile)) { continue; }
 
-                string projectFullFileName = solutionFolder + '\\' + projectFile;
-                if (!File.Exists(projectFullFileName)) { continue; }
-                if (projectFullFileName != projectFileInfo.FullName) { continue; }
+            string projectFullFileName = solutionFolder + '\\' + projectFile;
+            if (!File.Exists(projectFullFileName)) { continue; }
+            if (projectFullFileName != projectFileInfo.FullName) { continue; }
 
-                return projectName;
-            }
-        } else {
-            foreach (string s in File.ReadAllLines(solutionFileFullName)
-                    .ToList()
-                    .Select(x => x.Trim())
-                    .Where(x => x.StartsWith(_startTag))) {
-                if (!ExtractProject(s, out string projectName, out string projectFile)) { continue; }
-
-                string projectFullFileName = solutionFolder + '\\' + projectFile;
-                if (!File.Exists(projectFullFileName)) { continue; }
-                if (projectFullFileName != projectFileInfo.FullName) { continue; }
-
-                return projectName;
-            }
+            return projectName;
         }
 
         return "";
-    }
-
-    protected static bool ExtractProjectLegacy(string s, out string projectName, out string projectFile) {
-        projectName = projectFile = "";
-        int pos = s.IndexOf("= \"", StringComparison.Ordinal);
-        if (pos < 0) { return false; }
-
-        s = s.Remove(0, 3 + pos);
-        projectName = s.Substring(0, s.IndexOf('"'));
-        pos = s.IndexOf(", \"", StringComparison.Ordinal);
-        if (pos < 0) { return false; }
-
-        s = s.Remove(0, 3 + s.IndexOf(", \"", StringComparison.Ordinal));
-        projectFile = s.Substring(0, s.IndexOf('"'));
-        return true;
     }
 
     protected static bool ExtractProject(string s, out string projectName, out string projectFile) {
