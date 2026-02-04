@@ -24,7 +24,7 @@ public class ProjectFactoryTest {
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext _) {
-        _container = new ContainerBuilder().UseGittyAndPegh("Protch", new DummyCsArgumentPrompter()).UseGittyTestUtilities().UseProtch().Build();
+        _container = new ContainerBuilder().UseGittyAndPegh("Protch").UseGittyTestUtilities().UseProtch().Build();
     }
 
     [TestInitialize]
