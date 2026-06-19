@@ -18,8 +18,8 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Gitty" Version="2.0.2512.1155" />
-    <PackageReference Include="Seoa" Version="2.0.2512.1119" />
+    <PackageReference Include="Gitty" Version="2.0.2522.915" />
+    <PackageReference Include="Seoa" Version="2.0.2522.888" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Protch.csproj" />
