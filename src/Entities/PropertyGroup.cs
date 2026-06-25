@@ -22,4 +22,5 @@ public class PropertyGroup : IPropertyGroup {
     public string NuspecFile { get; set; }
     public string Deterministic { get; set; }
     public string GenerateAssemblyInfo { get; set; }
+    public string MSBuildEnableWorkloadResolver { get; set; }
 }

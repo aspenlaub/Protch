@@ -17,4 +17,5 @@ public interface IPropertyGroup {
     string NuspecFile { get; set; }
     string Deterministic { get; set; }
     string GenerateAssemblyInfo { get; set; }
+    string MSBuildEnableWorkloadResolver { get; set; }
 }

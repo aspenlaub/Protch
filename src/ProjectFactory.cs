@@ -138,6 +138,7 @@ public class ProjectFactory : IProjectFactory {
             NuspecFile = propertyGroupElement?.XPathSelectElement(namespaceSelector + "NuspecFile", NamespaceManager)?.Value ?? "",
             Deterministic = propertyGroupElement?.XPathSelectElement(namespaceSelector + "Deterministic", NamespaceManager)?.Value ?? "",
             GenerateAssemblyInfo = propertyGroupElement?.XPathSelectElement(namespaceSelector + "GenerateAssemblyInfo", NamespaceManager)?.Value ?? "",
+            MSBuildEnableWorkloadResolver = propertyGroupElement?.XPathSelectElement(namespaceSelector + "MSBuildEnableWorkloadResolver", NamespaceManager)?.Value ?? "",
         };
         return propertyGroup;
     }
