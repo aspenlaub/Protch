@@ -53,6 +53,6 @@
     <Folder Include="Entities\" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Pegh" Version="2.0.2607.990" />
+    <PackageReference Include="Pegh" Version="2.0.2620.846" />
   </ItemGroup>
 </Project>
