@@ -59,7 +59,7 @@ public class ProjectFactoryTest {
         Assert.IsNotNull(project);
         Assert.AreEqual(projectFileFullName, project.ProjectFileFullName);
         Assert.AreEqual((object) _pakledConsumerTarget.SolutionId, project.ProjectName);
-        Assert.AreEqual("net10.0", project.TargetFramework);
+        Assert.AreEqual("net11.0", project.TargetFramework);
         Assert.HasCount(3, project.PropertyGroups);
         Assert.AreEqual("git", project.RepositoryType);
         Assert.AreEqual(url, project.RepositoryUrl);
