@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
+    <TargetFramework>net11.0</TargetFramework>
     <AssemblyName>Aspenlaub.Net.GitHub.CSharp.Protch</AssemblyName>
     <RootNamespace>Aspenlaub.Net.GitHub.CSharp.Protch</RootNamespace>
     <GenerateBuildInfoConfigFile>false</GenerateBuildInfoConfigFile>
@@ -53,6 +53,6 @@
     <Folder Include="Entities\" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Pegh" Version="2.0.2666.1094" />
+    <PackageReference Include="Pegh" Version="2.0.2666.1381" />
   </ItemGroup>
 </Project>
